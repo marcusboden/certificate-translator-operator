@@ -1,0 +1,36 @@
+# This file configures Charmcraft.
+type: charm
+name: certificate-translator
+title: Certificate Translator
+summary: Translate between old and new tls-certificates interfaces.
+description: |
+  This charm acts as a bridge between OpenStack charms using the legacy
+  tls-certificates interface and modern TLS certificate providers such as
+  lego, vault, or self-signed-certificates.
+
+  On the legacy side it receives CN + SAN requests and returns generated
+  certificates. On the modern side it translates those requests into CSRs
+  and forwards them via the current tls-certificates interface.
+
+base: ubuntu@24.04
+platforms:
+  amd64:
+
+parts:
+  charm:
+    plugin: uv
+    source: .
+    build-snaps:
+      - astral-uv
+
+config:
+  options: {}
+
+requires:
+  certificates:
+    interface: tls-certificates
+    limit: 1
+
+provides:
+  legacy-certificates:
+    interface: tls-certificates
